@@ -1,1 +1,17 @@
 /target
+**/*.rs.bk
+
+/.cargo/
+/.env
+.env.*
+*.env
+
+AGENTS.md
+.codex
+
+/.idea/
+/.vscode/
+*.swp
+*.swo
+
+.DS_Store
