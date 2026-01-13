@@ -1,9 +1,25 @@
-pub fn encode(_str: String) -> String {
-    todo!("encode not implemented yet")
+use super::table::encode_char;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BinaryChunk(String);
+
+impl BinaryChunk {
+    pub fn new(s: String) -> Self {
+        BinaryChunk(s)
+    }
+}
+
+pub type BinaryChunks = Vec<BinaryChunk>;
+
+pub fn encode(str: String) -> String {
+    let str = prepare_text(&str);
+    let bin_str = encode_binary(&str);
+
+    bin_str
 }
 
 fn prepare_text(str: &str) -> String {
-    let mut buf = String::with_capacity(str.len());
+    let mut buf = String::new();
 
     for ch in str.chars() {
         if ch.is_uppercase() {
@@ -19,8 +35,23 @@ fn prepare_text(str: &str) -> String {
     buf
 }
 
-fn encode_binary(_str: &str) -> String {
-    todo!("binary encoding not implemented yet")
+fn encode_binary(str: &str) -> String {
+    let mut buf = String::new();
+
+    for ch in str.chars() {
+        let bin = encode_char(ch);
+
+        match bin {
+            Some(b) => buf.push_str(b),
+            None => panic!("unknown character: {}", ch)
+        }
+    }
+
+    buf
+}
+
+fn split_by_chunks(str: &str, chunk_size: usize) -> Vec<String> {
+    todo!("split_by_chunks not implemented yet")
 }
 
 #[cfg(test)]

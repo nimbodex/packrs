@@ -1,4 +1,4 @@
-fn encode_char(ch: char) -> Option<&'static str> {
+pub fn encode_char(ch: char) -> Option<&'static str> {
     match ch {
         ' ' => Some("11"),
         't' => Some("1001"),
