@@ -50,8 +50,17 @@ fn encode_binary(str: &str) -> String {
     buf
 }
 
-fn split_by_chunks(str: &str, chunk_size: usize) -> Vec<String> {
-    todo!("split_by_chunks not implemented yet")
+fn split_by_chunks(str: &str, chunk_size: usize) -> BinaryChunks {
+    let str_len = str.chars().count();
+    let mut chunks_count = str_len / chunk_size;
+    let mut chunks = Vec::new();
+    
+    if str_len % chunk_size != 0 {
+        chunks_count += 1;
+    }
+
+    
+    chunks
 }
 
 #[cfg(test)]
