@@ -1,5 +1,7 @@
 use super::table::encode_char;
 
+const CHUNK_SIZE: usize = 8;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BinaryChunk(String);
 
@@ -14,6 +16,7 @@ pub type BinaryChunks = Vec<BinaryChunk>;
 pub fn encode(str: String) -> String {
     let str = prepare_text(&str);
     let bin_str = encode_binary(&str);
+    let chunks = split_by_chunks(&bin_str, CHUNK_SIZE);
 
     bin_str
 }
@@ -53,12 +56,28 @@ fn encode_binary(str: &str) -> String {
 fn split_by_chunks(str: &str, chunk_size: usize) -> BinaryChunks {
     let str_len = str.chars().count();
     let mut chunks_count = str_len / chunk_size;
-    let mut chunks = Vec::new();
     
     if str_len % chunk_size != 0 {
         chunks_count += 1;
     }
 
+    let mut chunks = Vec::with_capacity(chunks_count);
+    let mut buf = String::new();
+
+    for (i, ch) in str.chars().enumerate() {
+        buf.push (ch);
+
+        if i+1 == chunk_size {
+            chunks.push(BinaryChunk::new(buf));
+            buf.clear();
+        }
+    }
+
+    if buf.len() != 0 {
+        let mut last_chunk = &buf;
+        last_chunk.push_str(&"0".repeat(chunk_size - last_chunk.len()));
+        chunks.push(BinaryChunk::new(last_chunk));
+    }
     
     chunks
 }
