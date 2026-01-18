@@ -11,12 +11,19 @@ impl BinaryChunk {
     }
 }
 
-pub type BinaryChunks = Vec<BinaryChunk>;
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BinaryChunks(Vec<BinaryChunk>);
+
+impl BinaryChunks {
+    pub fn new(chunks: Vec<BinaryChunk>) -> Self {
+        BinaryChunks(chunks)
+    }
+}
 
 pub fn encode(str: String) -> String {
     let str = prepare_text(&str);
     let bin_str = encode_binary(&str);
-    let chunks = split_by_chunks(&bin_str, CHUNK_SIZE);
+    let _ = split_by_chunks(&bin_str, CHUNK_SIZE);
 
     bin_str
 }
@@ -65,21 +72,21 @@ fn split_by_chunks(str: &str, chunk_size: usize) -> BinaryChunks {
     let mut buf = String::new();
 
     for (i, ch) in str.chars().enumerate() {
-        buf.push (ch);
+        buf.push(ch);
 
-        if i+1 == chunk_size {
-            chunks.push(BinaryChunk::new(buf));
+          if (i + 1) % chunk_size == 0 {
+            chunks.push(BinaryChunk::new(buf.clone()));
             buf.clear();
         }
     }
 
-    if buf.len() != 0 {
-        let mut last_chunk = &buf;
-        last_chunk.push_str(&"0".repeat(chunk_size - last_chunk.len()));
-        chunks.push(BinaryChunk::new(last_chunk));
+    if !buf.is_empty() {
+        let buf_len = buf.len();
+        buf.push_str(&"0".repeat(chunk_size - buf_len));
+        chunks.push(BinaryChunk::new(buf));
     }
     
-    chunks
+    BinaryChunks::new(chunks)
 }
 
 #[cfg(test)]
@@ -92,6 +99,33 @@ mod tests {
 
         for (str, expected) in cases {
             assert_eq!(prepare_text(str), expected, "base");
+        }
+    }
+
+    #[test]
+    fn encode_binary_tests() {
+        let cases = vec![("!n!a!s!a", "001000100000010000110010000101001000011")];
+
+        for (str, expected) in cases {
+            assert_eq!(encode_binary(str), expected, "base");
+        }
+    }
+
+    #[test]
+    fn split_by_chunks_tests() {
+        let cases = vec![(
+            "001000100000010000110010000101001000011",
+            BinaryChunks::new(vec![
+                BinaryChunk::new("00100010".to_string()),
+                BinaryChunk::new("00000100".to_string()),
+                BinaryChunk::new("00110010".to_string()),
+                BinaryChunk::new("00010100".to_string()),
+                BinaryChunk::new("10000110".to_string()),
+            ]),
+        )];
+
+        for (str, expected) in cases {
+            assert_eq!(split_by_chunks(str, CHUNK_SIZE), expected, "base")
         }
     }
 }
