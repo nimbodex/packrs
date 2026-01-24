@@ -42,6 +42,10 @@ impl HexChunks {
     pub fn new(chunks: Vec<HexChunk>) -> Self {
         HexChunks(chunks)
     }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
