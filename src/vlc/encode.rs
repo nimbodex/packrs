@@ -29,7 +29,7 @@ impl BinaryChunk {
 
     pub fn to_hex(&self) -> HexChunk {
         match u8::from_str_radix(&self.0, 2) {
-            Ok(num) => HexChunk::new(format!("{:02x}", num)),
+            Ok(num) => HexChunk::new(format!("{:02X}", num)),
             Err(e) => panic!("can't parse binary chunk: {}", e),
         }
     }
@@ -163,6 +163,25 @@ mod tests {
 
         for (str, expected) in cases {
             assert_eq!(split_by_chunks(str, CHUNK_SIZE), expected, "base")
+        }
+    }
+
+    #[test]
+    fn binary_chunk_to_hex_tests() {
+        // TODO: add more test cases
+        let cases = vec![(
+            BinaryChunks::new(vec![
+                BinaryChunk::new("0101111".to_string()),
+                BinaryChunk::new("10000000".to_string())
+            ]),
+            HexChunks::new(vec![
+                HexChunk::new("2F".to_string()),
+                HexChunk::new("80".to_string())
+            ])
+        )];
+
+        for (bcs, expected) in cases {
+            assert_eq!(bcs.to_hex(), expected, "base")
         }
     }
 }
