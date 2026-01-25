@@ -1,16 +1,17 @@
 use super::table::encode_char;
 
 const CHUNK_SIZE: usize = 8;
+const DEFAULT_SEPARATOR: char = ' ';
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BinaryChunks(Vec<BinaryChunk>);
 
 impl BinaryChunks {
-    pub fn new(chunks: Vec<BinaryChunk>) -> Self {
+    fn new(chunks: Vec<BinaryChunk>) -> Self {
         BinaryChunks(chunks)
     }
 
-    pub fn to_hex(&self) -> HexChunks {
+    fn to_hex(&self) -> HexChunks {
         HexChunks::new(
             self.0.iter()
                 .map(|chunk| chunk.to_hex())
@@ -23,11 +24,11 @@ impl BinaryChunks {
 pub struct BinaryChunk(String);
 
 impl BinaryChunk {
-    pub fn new(s: String) -> Self {
+    fn new(s: String) -> Self {
         BinaryChunk(s)
     }
 
-    pub fn to_hex(&self) -> HexChunk {
+    fn to_hex(&self) -> HexChunk {
         match u8::from_str_radix(&self.0, 2) {
             Ok(num) => HexChunk::new(format!("{:02X}", num)),
             Err(e) => panic!("can't parse binary chunk: {}", e),
@@ -39,12 +40,35 @@ impl BinaryChunk {
 pub struct HexChunks(Vec<HexChunk>);
 
 impl HexChunks {
-    pub fn new(chunks: Vec<HexChunk>) -> Self {
+    fn new(chunks: Vec<HexChunk>) -> Self {
         HexChunks(chunks)
     }
 
-    pub fn len(&self) -> usize {
+    fn len(&self) -> usize {
         self.0.len()
+    }
+
+    fn to_string(&self) -> String {
+        match self.0.len() {
+            0 => String::new(),
+            1 => self.0[0].0.clone(),
+            _ => {
+                let capacity = self.0.iter()
+                    .map(|hc| hc.0.len())
+                    .sum::<usize>()
+                    + (self.0.len() - 1) * DEFAULT_SEPARATOR.len_utf8();
+                
+                let mut builder = String::with_capacity(capacity);
+
+                builder.push_str(&self.0[0].0);
+                for hc in &self.0[1..] {
+                    builder.push(DEFAULT_SEPARATOR);
+                    builder.push_str(&hc.0);
+                }
+                
+                builder
+            }
+        }
     }
 }
 
@@ -52,21 +76,20 @@ impl HexChunks {
 pub struct HexChunk(String);
 
 impl HexChunk {
-    pub fn new(s: String) -> Self {
+    fn new(s: String) -> Self {
         HexChunk(s)
     }
 
-    pub fn len(&self) -> usize {
+    fn len(&self) -> usize {
         self.0.len()
     }
 }
 
 pub fn encode(str: String) -> String {
     let str = prepare_text(&str);
-    let bin_str = encode_binary(&str);
-    let _ = split_by_chunks(&bin_str, CHUNK_SIZE);
+    let chunks = split_by_chunks(&encode_binary(&str), CHUNK_SIZE);
 
-    bin_str
+    chunks.to_hex().to_string()
 }
 
 fn prepare_text(str: &str) -> String {
