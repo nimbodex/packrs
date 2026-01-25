@@ -211,4 +211,17 @@ mod tests {
             assert_eq!(bcs.to_hex(), expected, "base")
         }
     }
+
+    #[test]
+    fn binary_chunks_to_string_tests() {
+        // TODO: add more test cases
+        let cases = vec![(
+            String::from("My name is Ted"),
+            String::from("20 30 3C 18 77 4A E4 4D 28"),
+        )];
+
+        for (str, expected) in cases {
+            assert_eq!(encode(str), expected, "base")
+        }
+    }
 }
