@@ -213,12 +213,21 @@ mod tests {
     }
 
     #[test]
-    fn binary_chunks_to_string_tests() {
-        // TODO: add more test cases
-        let cases = vec![(
-            String::from("My name is Ted"),
-            String::from("20 30 3C 18 77 4A E4 4D 28"),
-        )];
+    fn encode_tests() {
+        let cases = vec![
+            (String::from("My name is Max"), String::from("20 30 3C 18 77 4A E4 06 C0 08")),
+            (String::from("NASA"), String::from("22 04 32 14 86")),
+            (String::from(""), String::from("")),
+            (String::from(" "), String::from("C0")),
+            (String::from("!"), String::from("20")),
+            (String::from("Hello!"), String::from("20 E9 24 C4 80")),
+            (String::from("hi"), String::from("34 80")),
+            (String::from("Hi"), String::from("20 D2")),
+            (String::from("Go"), String::from("20 24 40")),
+            (String::from("GO"), String::from("20 21 11")),
+            (String::from("AAA"), String::from("21 90 C8 60")),
+            (String::from("aA a"), String::from("64 3D 80")),
+        ];
 
         for (str, expected) in cases {
             assert_eq!(encode(str), expected, "base")
