@@ -233,4 +233,28 @@ mod tests {
             assert_eq!(encode(str), expected, "base")
         }
     }
+
+    #[test]
+    #[should_panic]
+    fn encode_panics_on_digits() {
+        encode("a1".to_string());
+    }
+
+    #[test]
+    #[should_panic]
+    fn encode_panics_on_unknown_punctuation() {
+        encode("hi,".to_string());
+    }
+
+    #[test]
+    #[should_panic]
+    fn encode_panics_on_newline() {
+        encode("hi\n".to_string());
+    }
+
+    #[test]
+    #[should_panic]
+    fn encode_panics_on_non_ascii() {
+        encode("привет".to_string());
+    }
 }
