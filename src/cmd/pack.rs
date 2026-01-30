@@ -1,8 +1,6 @@
-use std::fs::File;
-use std::io::{self, Read, Write};
-use std::path::Path;
+use std::fs;
 
-const PACKED_EXTENSION: &str = "vlc";
+use crate::vlc::encode::encode;
 
 pub struct PackArgs {
     pub input: String,
@@ -54,25 +52,19 @@ fn parse_args(argv: Vec<String>) -> Result<PackArgs, String> {
 
 fn pack(args: PackArgs) -> Result<(), String> {
     let file_path = args.input;
+    let output_path = args.output.ok_or("Missing -o/--output argument")?;
 
-    let mut file = File::open(&file_path)
-        .map_err(|e| format!("failed to open file '{}': {}", file_path, e))?;
-
-    let mut buf = Vec::new();
-
-    file.read_to_end(&mut buf)
+    let content = fs::read_to_string(&file_path)
         .map_err(|e| format!("failed to read file '{}': {}", file_path, e))?;
 
-    let mut stdout = io::stdout();
+    let encoded = encode(content);
 
-    println!("Read {} bytes", buf.len());
-    stdout
-        .write_all(&buf)
-        .map_err(|e| format!("failed to write to stdout: {e}"))?;
+    fs::write(&output_path, &encoded)
+        .map_err(|e| format!("failed to write file '{}': {}", output_path, e))?;
 
-    stdout
-        .flush()
-        .map_err(|e| format!("failed to flush stdout: {e}"))?;
+    if args.verbose {
+        println!("Packed '{}' -> '{}' ({} bytes)", file_path, output_path, encoded.len());
+    }
 
     Ok(())
 }
@@ -89,13 +81,4 @@ OPTIONS:
   -h, --help            Print help
 "
     );
-}
-
-fn packed_file_name(path: &str) -> Result<String, String> {
-    let file_stem = Path::new(path).file_stem();
-    let stem = file_stem.ok_or("missing file stem")?;
-    let stem_str = stem.to_str().ok_or("failed to convert stem to string")?;
-    let result = stem_str.to_owned() + "." + PACKED_EXTENSION;
-
-    Ok(result)
 }
