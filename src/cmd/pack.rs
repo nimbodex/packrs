@@ -2,8 +2,7 @@ use std::fs;
 use std::path::Path;
 use crate::vlc::encode::encode;
 
-const DEFAULT_FILE_NAME: &str = "output";
-const PACKED_EXTENSION: &str = "vlc";
+const DEFAULT_OUTPUT: &str = "output.vlc";
 
 pub struct PackArgs {
     pub input: String,
@@ -55,7 +54,7 @@ fn parse_args(argv: Vec<String>) -> Result<PackArgs, String> {
 
 fn pack(args: PackArgs) -> Result<(), String> {
     let file_path = args.input;
-    let output_path = args.output.unwrap_or_else(|| default_output_file_name());
+    let output_path = args.output.unwrap_or_else(|| DEFAULT_OUTPUT.to_string());
 
     let content = fs::read_to_string(&file_path)
         .map_err(|e| format!("failed to read file '{}': {}", file_path, e))?;
@@ -70,10 +69,6 @@ fn pack(args: PackArgs) -> Result<(), String> {
     }
 
     Ok(())
-}
-
-fn default_output_file_name() -> String {
-    format!("{}.{}", DEFAULT_FILE_NAME, PACKED_EXTENSION)
 }
 
 fn print_help() {
