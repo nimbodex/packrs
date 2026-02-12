@@ -73,7 +73,7 @@ fn pack(args: PackArgs) -> Result<(), String> {
 }
 
 fn default_output_file_name() -> String {
-    DEFAULT_FILE_NAME.to_owned() + "." + PACKED_EXTENSION
+    format!("{}.{}", DEFAULT_FILE_NAME, PACKED_EXTENSION)
 }
 
 fn print_help() {
