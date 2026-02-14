@@ -1,5 +1,4 @@
 use std::fs;
-use std::path::Path;
 use crate::vlc::encode::encode;
 
 const DEFAULT_OUTPUT: &str = "output.vlc";
