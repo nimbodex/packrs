@@ -11,7 +11,7 @@ impl BinaryChunks {
     pub fn to_hex(&self) -> HexChunks {
         HexChunks::new(
             self.0.iter()
-                .map(|chunk| chunk.to_hex())
+                .map(BinaryChunk::to_hex)
                 .collect()
         )
     }
@@ -27,8 +27,8 @@ impl BinaryChunk {
 
     pub fn to_hex(&self) -> HexChunk {
         match u8::from_str_radix(&self.0, 2) {
-            Ok(num) => HexChunk::new(format!("{:02X}", num)),
-            Err(e) => panic!("can't parse binary chunk: {}", e),
+            Ok(num) => HexChunk::new(format!("{num:02X}")),
+            Err(e) => panic!("can't parse binary chunk: {e}"),
         }
     }
 }

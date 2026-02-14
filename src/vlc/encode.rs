@@ -1,5 +1,4 @@
 use super::table::encode_char;
-use crate::vlc::hex::{HexChunk, HexChunks};
 use crate::vlc::binary::{BinaryChunk, BinaryChunks};
 
 const CHUNK_SIZE: usize = 8;
@@ -74,6 +73,7 @@ fn split_by_chunks(str: &str, chunk_size: usize) -> BinaryChunks {
 
 #[cfg(test)]
 mod tests {
+    use crate::vlc::hex::{HexChunk, HexChunks};
     use super::*;
 
     #[test]
