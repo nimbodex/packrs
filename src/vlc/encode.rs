@@ -35,7 +35,7 @@ fn encode_binary(str: &str) -> String {
 
         match bin {
             Some(b) => buf.push_str(b),
-            None => panic!("unknown character: {}", ch)
+            None => panic!("unknown character: {ch}")
         }
     }
 
@@ -73,8 +73,8 @@ fn split_by_chunks(str: &str, chunk_size: usize) -> BinaryChunks {
 
 #[cfg(test)]
 mod tests {
-    use crate::vlc::hex::{HexChunk, HexChunks};
     use super::*;
+    use crate::vlc::hex::{HexChunk, HexChunks};
 
     #[test]
     fn prepare_text_tests() {

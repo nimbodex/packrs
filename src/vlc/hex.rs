@@ -1,9 +1,9 @@
 use std::fmt;
 
-const DEFAULT_SEPARATOR: char = ' ';
+pub const DEFAULT_SEPARATOR: char = ' ';
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HexChunks(Vec<HexChunk>);
+pub struct HexChunks(pub Vec<HexChunk>); // TODO: Make internal data to private
 
 impl HexChunks {
     pub fn new(chunks: Vec<HexChunk>) -> Self {
@@ -28,7 +28,7 @@ impl fmt::Display for HexChunks {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HexChunk(String);
+pub struct HexChunk(pub String); // TODO: Make internal data to private
 
 impl HexChunk {
     pub fn new(s: String) -> Self {
