@@ -8,6 +8,18 @@ impl BinaryChunks {
         BinaryChunks(chunks)
     }
 
+    pub fn with_capacity(cap: usize) -> Self {
+        Self(Vec::with_capacity(cap))
+    }
+    
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+    
+    pub fn push(&mut self, chunk: BinaryChunk) {
+        self.0.push(chunk);
+    }
+
     pub fn to_hex(&self) -> HexChunks {
         HexChunks::new(
             self.0.iter()

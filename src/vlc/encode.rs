@@ -1,7 +1,7 @@
 use super::table::encode_char;
 use crate::vlc::binary::{BinaryChunk, BinaryChunks};
 
-const CHUNK_SIZE: usize = 8;
+pub const CHUNK_SIZE: usize = 8;
 
 pub fn encode(str: String) -> String {
     let str = prepare_text(&str);
