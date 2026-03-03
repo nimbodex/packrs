@@ -72,8 +72,8 @@ impl HexChunk {
 
 #[cfg(test)]
 mod tests {
-    use crate::vlc::hex::{HexChunk};
-    use crate::vlc::hex::{BinaryChunk};
+    use crate::vlc::binary::{BinaryChunk, BinaryChunks};
+    use crate::vlc::hex::{HexChunk, HexChunks};
 
     #[test]
     fn hex_chunk_to_binary_tests() {
@@ -91,6 +91,25 @@ mod tests {
 
         for (hc, expected) in cases {
             assert_eq!(hc.to_binary(), expected, "base");
+        }
+    }
+
+    #[test]
+    fn hex_chunks_to_binary_tests() {
+        // TODO: add more test cases
+        let cases = vec![(
+            HexChunks::new(vec![
+                HexChunk::new(String::from("2F")),
+                HexChunk::new(String::from("80"))
+            ]),
+            BinaryChunks::new(vec![
+                BinaryChunk::new(String::from("00101111")),
+                BinaryChunk::new(String::from("10000000"))
+            ])
+        )];
+
+        for (hcs, expected) in cases {
+            assert_eq!(hcs.to_binary(), expected, "base");
         }
     }
 }
