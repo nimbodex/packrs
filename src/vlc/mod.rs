@@ -4,3 +4,4 @@ pub mod decode;
 mod binary;
 mod hex;
 mod table;
+mod decoding_tree;
