@@ -1,7 +1,19 @@
+use super::table::ENCODING_TABLE;
+
 pub struct DecodingTree {
     pub value: Option<char>,
     pub zero: Option<Box<DecodingTree>>,
     pub one: Option<Box<DecodingTree>>,
+}
+
+pub fn decoding_tree() -> DecodingTree {
+    let mut result = DecodingTree::new();
+
+    for (ch, code) in ENCODING_TABLE.iter() {
+        result.insert(*ch, code);
+    }
+
+    result
 }
 
 impl DecodingTree {
